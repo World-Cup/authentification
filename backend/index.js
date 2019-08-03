@@ -8,7 +8,8 @@ const bcrypt= require ("bcrypt");
 const cors= require("cors");
 //tells express to use cors
 app.use(cors());
-const cookieParser= require ('cookie-parser');
+const cookieParser= require ("cookie-parser");
+app.use(cookieParser("secretpassword"))
 
 //middleware function: core and body-parser
 const bodyparser= require("body-parser");
@@ -36,20 +37,32 @@ app.post("/createAccount", async (req,res)=>{
     res.send({message:"user created"});
 })
 app.post("/login", async (req,res)=>{
-    const userDB=await models.User.findOne({
-        where: {username: req.body.username}
-    })
-    //res.send make sure to always return something
-    if (!userDB) {
-		res.send({ error: "Can't sign in" });
-	} else {
-        const match = await (bcrypt.compare(req.body.password, userDB.password));
-		if (match) {
-			res.send({ message: "user is signed in" });
-		} else {
-			res.send({ error: "Can't sign in" });
-		}
-	}
+    console.log(req.cookies);
+    //checks if user is loged in
+    if (req.cookies.userID){
+        console.log("sign in sucessful. used a cookie");
+        res.send("User is signed in");
+    }else{
+    //goes through the login process again
+        const userDB=await models.User.findOne({
+            where: {username: req.body.username}
+        })
+        //res.send make sure to always return something
+        if (!userDB) {
+            res.send({ error: "Can't sign in" });
+        }else {
+            const match = await (bcrypt.compare(req.body.password, userDB.password));
+            if (match) {
+                console.log("Sign In Success! but used a hash");
+                //adds cookie if login is a success
+                //gets user ID data from database- checks cookie parser- pull all the information in it
+                res.cookie("userID", userDB.id).send({ message: "user is signed in" });
+            } 
+            else {
+                res.send({ error: "Can't sign in" });
+            }
+        }
+    }
 });
 //login checker is a middleware function. 
 const loginChecker = async (req,res, next)=>{
