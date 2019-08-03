@@ -72,17 +72,15 @@ checkLogin=()=>{
 				method: "POST",
 				headers: { "Content-type": "application/json" },
 				body: JSON.stringify({
-          num1: 1, num2: 2,
-          username: this.state.loginusername,
-          password: this.state.loginpassword
+          num1: 1, num2: 2, username: this.state.loginusername, password: this.state.loginpassword
 				})
       })
       .then(rawJSON => { 
         return rawJSON.json();
       })
       .then(data => {
-        this.setState({result: data.result})
-      });
+        this.setState({result: data.result});
+    });
 }
   render() {
     return (
@@ -179,8 +177,7 @@ checkLogin=()=>{
 
 export default App
 const InputContainer = styled.input`
-  padding: 2em; width: 500px; 
-  margin: 0.25em;
+  padding: 1.5em; width: 400px; 
   color: ${props => props.inputColor || "palevioletred"};
   background: papayawhip;
   border-radius: 3px;

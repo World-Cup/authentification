@@ -3,14 +3,12 @@ const app= express();
 const PORT = process.env.PORT || 5000;
 const models= require("./models")();
 models.init();
-const md5 = require("md5");
-//md5 is a package and an encryption hashing package
-const cryptoRandomString = require("crypto-random-string");
+
 const bcrypt= require ("bcrypt");
 const cors= require("cors");
 //tells express to use cors
 app.use(cors());
-
+const cookieParser= require ('cookie-parser');
 
 //middleware function: core and body-parser
 const bodyparser= require("body-parser");
@@ -53,25 +51,25 @@ app.post("/login", async (req,res)=>{
 		}
 	}
 });
-//middleware is a function that runs before a function in fron ot it. located after add.
+//login checker is a middleware function. 
 const loginChecker = async (req,res, next)=>{
     const userDB= await models.User.findOne({
         where: {username: req.body.username}
     })
-    //res.send make sure to always return something
     if (!userDB) {
 		res.status(401).send({ error: "Can't sign in" });
 	} else {
         const match = await (bcrypt.compare(req.body.password, userDB.password));
 		if (match) {
 			next();
-		} else {
+		}else {
 			res.status(401).send({ error: "Can't sign in" });
 		}
 	}
 };
+//middleware is a function that runs before a function in fron ot it. located after add.
 app.post("/add", loginChecker, (req, res)=>{
-    res.send({result: req.body.num1+ req.body.num2})
+    res.send({result: req.body.num1 + req.body.num2})
 })
 app.listen(PORT, 
     console.log(`server is running! On port 5000${PORT}`)
