@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Container, Form, FormGroup, Input, Label, Button} from 'reactstrap';
-import NavBar from './navBar';
+
 import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 export class App extends Component {
@@ -46,7 +46,6 @@ login=()=>{
   render() {
     return (
     <Container>
-      <NavBar/>
       <h3>Log In</h3>
       <Form>
         <FormGroup>
