@@ -54,6 +54,7 @@ app.post("/login", async (req,res)=>{
             const match = await (bcrypt.compare(req.body.password, userDB.password));
             if (match) {
                 console.log("Sign In Success! but used a hash");
+                console.log(userDB.id);
                 //adds cookie if login is a success
                 //gets user ID data from database- checks cookie parser- pull all the information in it
                 res.cookie("userID", userDB.id).send({ message: "user is signed in" });
